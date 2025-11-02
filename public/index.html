@@ -1,109 +1,63 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MaltoStore - Top Up Robux</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roblox Username Checker</title>
   <style>
-    :root {
-      --light-bg: #f4f7fb;
-      --light-card: #ffffff;
-      --light-text: #1f2937;
-      --light-border: #d1d5db;
-      --light-accent: #FFE900;
-      --header-bg: #F1C31C;
-      --dark-bg: #0a0f2b;
-      --dark-card: #11153b;
-      --dark-text: #d6d2ff;
-      --dark-border: #3b2d77;
-      --dark-accent: #8b5cf6;
-    }
-    body { background-color: var(--light-bg); color: var(--light-text); font-family: "Inter", sans-serif; transition: background-color 0.5s, color 0.5s; }
-    body.dark { background-color: var(--dark-bg); color: var(--dark-text); }
-    .card { background-color: var(--light-card); border: 1px solid var(--light-border); box-shadow: 0 0 15px rgba(0, 0, 0, 0.08); transition: background-color 0.5s, border-color 0.5s, color 0.5s; }
-    body.dark .card { background-color: var(--dark-card); border-color: var(--dark-border); }
-    input { background-color: var(--light-bg); color: var(--light-text); border: 1px solid var(--light-border); transition: all 0.4s ease; }
-    body.dark input { background-color: #1a1f45; color: var(--dark-text); border-color: var(--dark-border); }
-    .btn-primary { background-color: var(--light-accent); color: white; transition: 0.3s; }
-    .btn-primary:hover { background-color: #2563eb; }
-    body.dark .btn-primary { background-color: var(--dark-accent); color: white; }
-    body.dark .btn-primary:hover { background-color: #7c3aed; }
-    #avatarPreview { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--light-accent);}
-    body.dark #avatarPreview { border-color: var(--dark-accent);}
+    body { font-family: Arial, sans-serif; padding: 2em; background: #f5f5f5; }
+    h1 { margin-bottom: 1em; }
+    input, button { font-size: 1em; padding: .5em; margin-right: .5em; }
+    #result { margin-top: 1em; font-weight: bold; }
+    #avatarContainer { margin-top: 10px; }
+    img.avatar { border-radius: 50%; width: 150px; height: 150px; }
   </style>
 </head>
 <body>
-  <div class="flex flex-col items-center justify-center min-h-screen p-6">
-    <div class="card rounded-2xl p-6 w-full max-w-md">
-      <h1 class="text-3xl font-bold mb-4 text-center">🎮 MaltoStore Top Up Robux</h1>
-      <label class="block mb-2 font-medium">Masukkan Username Roblox</label>
-      <div class="flex mb-3">
-        <input id="usernameInput" type="text" class="flex-1 p-3 rounded-l-lg border border-gray-300" placeholder="Contoh: PlayerRoblox123">
-        <button id="checkBtn" class="btn-primary px-4 rounded-r-lg">🔍 Cek</button>
-      </div>
-      <p id="userStatus" class="text-sm mb-4 text-gray-500 italic">Belum dicek</p>
-      <div id="avatarSection" class="flex flex-col items-center mb-4 hidden">
-        <img id="avatarPreview" src="" alt="Avatar Roblox">
-        <p id="displayName" class="mt-2 font-semibold"></p>
-      </div>
-    </div>
-  </div>
-  <script>
-    const checkBtnEl = document.getElementById("checkBtn");
-    const usernameInputEl = document.getElementById("usernameInput");
-    const userStatusEl = document.getElementById("userStatus");
-    const avatarSectionEl = document.getElementById("avatarSection");
-    const avatarPreviewEl = document.getElementById("avatarPreview");
-    const displayNameEl = document.getElementById("displayName");
+  <h1>Roblox Username Checker</h1>
 
-    checkBtnEl.onclick = async () => {
-      const username = usernameInputEl.value.trim();
-      if (!username) {
-        alert("Masukkan username Roblox!");
-        return;
-      }
-      userStatusEl.textContent = "🔎 Memeriksa username...";
-      avatarSectionEl.classList.add("hidden");
+  <form id="usernameForm">
+    <input type="text" id="username" placeholder="Enter Roblox username" required />
+    <button type="submit">Check</button>
+  </form>
+
+  <div id="result"></div>
+  <div id="avatarContainer"></div>
+
+  <script>
+    const form = document.getElementById('usernameForm');
+    const resultDiv = document.getElementById('result');
+    const avatarContainer = document.getElementById('avatarContainer');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+
+      if (!username) return;
+
+      resultDiv.textContent = 'Checking...';
+      avatarContainer.innerHTML = '';
 
       try {
-        const resp = await fetch("/api/check-roblox-username", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const res = await fetch('/api/check-roblox-username', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username })
         });
-        const d = await resp.json();
 
-        if (resp.status === 429) {
-          userStatusEl.textContent = "⚠️ Server terlalu banyak request ke Roblox. Silakan tunggu beberapa detik dan coba lagi.";
-          return;
-        }
+        const data = await res.json();
 
-        if (resp.ok && d.exists && d.user && d.user.id) {
-          displayNameEl.textContent = d.user.name;
-
-          // Ambil avatar dari endpoint thumbnail Roblox terbaru
-          const thumbResp = await fetch(
-            `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${d.user.id}&size=150x150&format=Png&isCircular=false`
-          );
-          const thumbData = await thumbResp.json();
-          if (thumbData.data && thumbData.data.length > 0 && thumbData.data[0].imageUrl) {
-            avatarPreviewEl.src = thumbData.data[0].imageUrl;
-          } else {
-            avatarPreviewEl.src = "";
-          }
-
-          avatarSectionEl.classList.remove("hidden");
-          userStatusEl.textContent = `✅ Username valid: ${d.user.name} (ID: ${d.user.id})`;
-        } else if (resp.status === 404) {
-          userStatusEl.textContent = "❌ Username tidak ditemukan!";
+        if (res.ok && data.exists) {
+          resultDiv.innerHTML = `Username "<b>${username}</b>" exists!<br>User ID: <b>${data.user.id}</b>`;
+          avatarContainer.innerHTML = `<img class="avatar" src="https://www.roblox.com/headshot-thumbnail/image?userId=${data.user.id}&width=150&height=150&format=png" alt="Avatar">`;
         } else {
-          userStatusEl.textContent = "⚠️ Terjadi kesalahan server Roblox. Silakan coba lagi nanti.";
+          resultDiv.textContent = `Username "${username}" does not exist.`;
         }
+
       } catch (err) {
-        userStatusEl.textContent = "⚠️ Error jaringan/server. Silakan coba lagi.";
+        resultDiv.textContent = 'Error checking username. Please try again later.';
       }
-    };
+    });
   </script>
 </body>
 </html>
