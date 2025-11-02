@@ -1,31 +1,31 @@
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    res.status(405).json({ error: "Only POST allowed" });
-    return;
+const resp = await fetch("https://users.roblox.com/v1/usernames/users", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ usernames: [username] })
+});
+const d = await resp.json();
+if (d.data && d.data.length > 0 && d.data[0].id) {
+  validUser = true;
+  userId = d.data[0].id;
+  userName = d.data[0].name;
+  displayNameEl.textContent = userName;
+
+  // GANTI BAGIAN INI:
+  // avatarPreviewEl.src = `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`;
+
+  // PAKAI AVATAR BARU:
+  const thumbResp = await fetch(
+    `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`
+  );
+  const thumbData = await thumbResp.json();
+  if (thumbData.data && thumbData.data.length > 0) {
+    avatarPreviewEl.src = thumbData.data[0].imageUrl;
+  } else {
+    avatarPreviewEl.src = "";
   }
 
-  const { username } = req.body;
-
-  if (!username) {
-    res.status(400).json({ error: "Username is required" });
-    return;
-  }
-
-  try {
-    const robloxRes = await fetch("https://users.roblox.com/v1/usernames/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ usernames: [username], excludeBannedUsers: false }),
-    });
-
-    const data = await robloxRes.json();
-
-    if (data?.data?.length > 0 && data.data[0].requestedUsername) {
-      res.status(200).json({ exists: true, user: data.data[0] });
-    } else {
-      res.status(404).json({ exists: false });
-    }
-  } catch (error) {
-    res.status(500).json({ error: "Failed to check username" });
-  }
+  avatarSectionEl.classList.remove("hidden");
+  userStatusEl.textContent = `✅ Username valid: ${userName} (ID: ${userId})`;
+} else {
+  userStatusEl.textContent = "❌ Username tidak ditemukan!";
 }
