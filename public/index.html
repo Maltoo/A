@@ -107,7 +107,16 @@
 
         if (res.ok && data.exists) {
           resultDiv.innerHTML = `Username "<b>${username}</b>" exists!<br>User ID: <b>${data.user.id}</b>`;
-          avatarContainer.innerHTML = `<img class="avatar" src="https://www.roblox.com/headshot-thumbnail/image?userId=${data.user.id}&width=150&height=150&format=png" alt="Avatar">`;
+
+          // Fetch avatar image using Roblox Thumbnails API
+          const avatarRes = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${data.user.id}&size=150x150&format=Png&isCircular=false`);
+          const avatarData = await avatarRes.json();
+
+          if (avatarData.data && avatarData.data[0] && avatarData.data[0].imageUrl) {
+            avatarContainer.innerHTML = `<img class="avatar" src="${avatarData.data[0].imageUrl}" alt="Avatar">`;
+          } else {
+            avatarContainer.innerHTML = `<p>⚠️ Avatar not found.</p>`;
+          }
         } else {
           resultDiv.textContent = `Username "${username}" does not exist.`;
         }
