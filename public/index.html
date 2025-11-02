@@ -1,85 +1,134 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>1cekusn - Cek Username Roblox</title>
+  <title>Roblox Username Checker</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f7fb;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      padding: 2em;
+      background: #f5f5f5;
     }
 
     h1 {
-      margin-top: 50px;
-      color: #333;
-    }
-
-    .search-box {
-      margin-top: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    input {
-      padding: 10px;
-      width: 220px;
-      border: 2px solid #007bff;
-      border-radius: 8px;
-      outline: none;
-    }
-
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 10px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .avatar {
-      margin-top: 30px;
+      margin-bottom: 1em;
       text-align: center;
     }
 
-    .avatar img {
-      border-radius: 12px;
-      border: 3px solid #007bff;
+    form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5em;
     }
 
-    .error {
-      color: red;
-      margin-top: 20px;
+    input {
+      font-size: 1em;
+      padding: 0.5em 0.75em;
+      width: 250px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: #007bff;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5em 0.9em;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    #result {
+      margin-top: 1em;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    #avatarContainer {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    img.avatar {
+      border-radius: 50%;
+      width: 150px;
+      height: 150px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
   </style>
 </head>
 <body>
+  <h1>Roblox Username Checker</h1>
 
-  <h1>🔍 1cekusn</h1>
-  <p>Memudahkan pemain mencari player Roblox</p>
+  <form id="usernameForm">
+    <input type="text" id="username" placeholder="Enter Roblox username" required />
+    <button type="submit" title="Check Username">🔍</button>
+  </form>
 
-  <div class="search-box">
-    <input type="text" id="username" placeholder="Masukkan username Roblox...">
-    <button id="searchBtn">🔍</button>
-  </div>
+  <div id="result"></div>
+  <div id="avatarContainer"></div>
 
-  <div class="avatar" id="hasil"></div>
-  <p class="error" id="error"></p>
+  <script>
+    const form = document.getElementById('usernameForm');
+    const resultDiv = document.getElementById('result');
+    const avatarContainer = document.getElementById('avatarContainer');
 
-  <!-- Panggil file JavaScript eksternal -->
-  <script src="script.js"></script>
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
 
+      if (!username) return;
+
+      resultDiv.textContent = 'Checking...';
+      avatarContainer.innerHTML = '';
+
+      try {
+        // Cek username lewat API kamu
+        const res = await fetch('/api/check-roblox-username', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username })
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.exists) {
+          const userId = data.user.id;
+          resultDiv.innerHTML = `Username "<b>${username}</b>" exists!<br>User ID: <b>${userId}</b>`;
+
+          // Ambil URL avatar lewat API thumbnails.roblox.com
+          const thumbRes = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`);
+          const thumbData = await thumbRes.json();
+
+          if (thumbData.data && thumbData.data.length > 0) {
+            const imageUrl = thumbData.data[0].imageUrl;
+            avatarContainer.innerHTML = `<img class="avatar" src="${imageUrl}" alt="Avatar">`;
+          } else {
+            avatarContainer.innerHTML = `<p>⚠️ Gagal memuat avatar.</p>`;
+          }
+        } else {
+          resultDiv.textContent = `Username "${username}" does not exist.`;
+        }
+
+      } catch (err) {
+        console.error(err);
+        resultDiv.textContent = 'Error checking username. Please try again later.';
+      }
+    });
+  </script>
 </body>
 </html>
