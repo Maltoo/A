@@ -67,13 +67,18 @@
       avatarSectionEl.classList.add("hidden");
 
       try {
-        // Panggil backend-proxy sendiri (anti CORS)
         const resp = await fetch("/api/check-roblox-username", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username })
         });
         const d = await resp.json();
+
+        if (resp.status === 429) {
+          userStatusEl.textContent = "⚠️ Server terlalu banyak request ke Roblox. Silakan tunggu beberapa detik dan coba lagi.";
+          return;
+        }
+
         if (resp.ok && d.exists && d.user && d.user.id) {
           displayNameEl.textContent = d.user.name;
 
@@ -90,11 +95,13 @@
 
           avatarSectionEl.classList.remove("hidden");
           userStatusEl.textContent = `✅ Username valid: ${d.user.name} (ID: ${d.user.id})`;
-        } else {
+        } else if (resp.status === 404) {
           userStatusEl.textContent = "❌ Username tidak ditemukan!";
+        } else {
+          userStatusEl.textContent = "⚠️ Terjadi kesalahan server Roblox. Silakan coba lagi nanti.";
         }
       } catch (err) {
-        userStatusEl.textContent = "⚠️ Terjadi kesalahan server Roblox. Silakan coba lagi nanti.";
+        userStatusEl.textContent = "⚠️ Error jaringan/server. Silakan coba lagi.";
       }
     };
   </script>
