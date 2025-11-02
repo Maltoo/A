@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <style>
+    /* ...CSS Anda seperti sebelumnya... */
     :root {
       --light-bg: #f4f7fb;
       --light-card: #ffffff;
@@ -14,137 +15,42 @@
       --light-border: #d1d5db;
       --light-accent: #FFE900;
       --header-bg: #F1C31C;
-
       --dark-bg: #0a0f2b;
       --dark-card: #11153b;
       --dark-text: #d6d2ff;
       --dark-border: #3b2d77;
       --dark-accent: #8b5cf6;
     }
-
-    body {
-      background-color: var(--light-bg);
-      color: var(--light-text);
-      font-family: "Inter", sans-serif;
-      transition: background-color 0.5s, color 0.5s;
-    }
-
-    body.dark {
-      background-color: var(--dark-bg);
-      color: var(--dark-text);
-    }
-
-    .card {
-      background-color: var(--light-card);
-      border: 1px solid var(--light-border);
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
-      transition: background-color 0.5s, border-color 0.5s, color 0.5s;
-    }
-
-    body.dark .card {
-      background-color: var(--dark-card);
-      border-color: var(--dark-border);
-    }
-
-    input {
-      background-color: var(--light-bg);
-      color: var(--light-text);
-      border: 1px solid var(--light-border);
-      transition: all 0.4s ease;
-    }
-
-    body.dark input {
-      background-color: #1a1f45;
-      color: var(--dark-text);
-      border-color: var(--dark-border);
-    }
-
-    .btn-primary {
-      background-color: var(--light-accent);
-      color: white;
-      transition: 0.3s;
-    }
-
-    .btn-primary:hover {
-      background-color: #2563eb;
-    }
-
-    body.dark .btn-primary {
-      background-color: var(--dark-accent);
-      color: white;
-    }
-
-    body.dark .btn-primary:hover {
-      background-color: #7c3aed;
-    }
-
-    #themeToggle {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      background-color: var(--light-card);
-      border: 2px solid var(--light-accent);
-      border-radius: 9999px;
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 26px;
-      transition: all 0.4s ease;
-      z-index: 50;
-      color: var(--light-accent);
-    }
-
-    body.dark #themeToggle {
-      background-color: var(--dark-card);
-      border-color: var(--dark-accent);
-      color: var(--dark-accent);
-    }
-
-    #themeToggle:hover {
-      transform: rotate(15deg) scale(1.1);
-    }
-
-    .header-bar {
-      background-color: var(--header-bg);
-      transition: background-color 0.5s ease, color 0.5s ease;
-    }
-
-    body.dark .header-bar {
-      background-color: #6d28d9;
-      color: #fff;
-    }
-
-    #avatarPreview {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 3px solid var(--light-accent);
-    }
-
-    body.dark #avatarPreview {
-      border-color: var(--dark-accent);
-    }
+    body { background-color: var(--light-bg); color: var(--light-text); font-family: "Inter", sans-serif; transition: background-color 0.5s, color 0.5s; }
+    body.dark { background-color: var(--dark-bg); color: var(--dark-text); }
+    .card { background-color: var(--light-card); border: 1px solid var(--light-border); box-shadow: 0 0 15px rgba(0, 0, 0, 0.08); transition: background-color 0.5s, border-color 0.5s, color 0.5s; }
+    body.dark .card { background-color: var(--dark-card); border-color: var(--dark-border); }
+    input { background-color: var(--light-bg); color: var(--light-text); border: 1px solid var(--light-border); transition: all 0.4s ease; }
+    body.dark input { background-color: #1a1f45; color: var(--dark-text); border-color: var(--dark-border); }
+    .btn-primary { background-color: var(--light-accent); color: white; transition: 0.3s; }
+    .btn-primary:hover { background-color: #2563eb; }
+    body.dark .btn-primary { background-color: var(--dark-accent); color: white; }
+    body.dark .btn-primary:hover { background-color: #7c3aed; }
+    #themeToggle { position: fixed; top: 16px; right: 16px; background-color: var(--light-card); border: 2px solid var(--light-accent); border-radius: 9999px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 26px; transition: all 0.4s ease; z-index: 50; color: var(--light-accent); }
+    body.dark #themeToggle { background-color: var(--dark-card); border-color: var(--dark-accent); color: var(--dark-accent); }
+    #themeToggle:hover { transform: rotate(15deg) scale(1.1); }
+    .header-bar { background-color: var(--header-bg); transition: background-color 0.5s ease, color 0.5s ease; }
+    body.dark .header-bar { background-color: #6d28d9; color: #fff; }
+    #avatarPreview { width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--light-accent);}
+    body.dark #avatarPreview { border-color: var(--dark-accent);}
   </style>
 </head>
-
 <body>
   <button id="themeToggle">🌙</button>
-
   <div id="formPage" class="flex flex-col items-center justify-center min-h-screen p-6">
     <div class="card rounded-2xl p-6 w-full max-w-md">
       <h1 class="text-3xl font-bold mb-4 text-center">🎮 MaltoStore Top Up Robux</h1>
-
       <label class="block mb-2 font-medium">Masukkan Username Roblox</label>
       <div class="flex mb-3">
-        <input id="usernameInput" type="text" class="flex-1 p-3 rounded-l-lg border border-gray-300"
-               placeholder="Contoh: PlayerRoblox123">
+        <input id="usernameInput" type="text" class="flex-1 p-3 rounded-l-lg border border-gray-300" placeholder="Contoh: PlayerRoblox123">
         <button id="checkBtn" class="btn-primary px-4 rounded-r-lg">🔍 Cek</button>
       </div>
       <p id="userStatus" class="text-sm mb-4 text-gray-500 italic">Belum dicek</p>
-
       <div id="avatarSection" class="flex flex-col items-center mb-4 hidden">
         <img id="avatarPreview" src="" alt="Avatar Roblox">
         <p id="displayName" class="mt-2 font-semibold"></p>
@@ -158,20 +64,17 @@
       <button id="generateBtn" class="btn-primary w-full py-3 rounded-lg font-semibold">⚡ Generate QRIS</button>
     </div>
   </div>
-
   <div id="resultPage" class="hidden min-h-screen flex flex-col">
     <div class="flex items-center px-4 py-3 text-slate-900 dark:text-white header-bar">
       <button id="backBtn" class="text-lg mr-2">←</button>
       <h2 class="text-lg font-semibold">Kembali</h2>
     </div>
-
     <div class="flex-1 overflow-auto p-6">
       <div class="max-w-md mx-auto">
         <div class="card rounded-xl p-5 mb-4">
           <p class="text-sm opacity-80">Total Bayar</p>
           <h1 id="totalAmount" class="text-3xl font-bold">Rp0</h1>
         </div>
-
         <div class="card rounded-xl p-5 mb-6">
           <h3 class="font-semibold mb-3">Detail Top Up</h3>
           <p class="flex justify-between mb-1"><span>Username</span><span id="rUsername"></span></p>
@@ -180,20 +83,17 @@
           <p class="flex justify-between mb-1"><span>Gamepass Harga</span><span id="rGamepass"></span></p>
           <p class="flex justify-between mb-1"><span>Biaya Admin</span><span id="rAdmin"></span></p>
         </div>
-
         <div class="flex flex-col items-center text-center">
           <div id="qrcodeContainer" class="bg-white p-4 rounded-lg shadow-sm mb-3">
             <div id="qrcode"></div>
           </div>
           <p id="amountQR" class="text-lg font-semibold mb-4"></p>
-
           <button id="downloadQR" class="btn-primary w-full py-3 rounded-lg mb-2">💾 Download QRIS</button>
           <button id="waBtn" class="w-full bg-green-600 hover:bg-green-500 text-white py-3 rounded-lg font-semibold">💬 Kirim Bukti via WhatsApp</button>
         </div>
       </div>
     </div>
   </div>
-
   <script>
     // THEME TOGGLE
     const bodyEl = document.body;
@@ -206,7 +106,7 @@
     setTheme(localStorage.theme === "dark");
     themeToggle.onclick = () => setTheme(!bodyEl.classList.contains("dark"));
 
-    // VARIABLES
+    // --- VARIABEL ---
     const checkBtnEl = document.getElementById("checkBtn");
     const usernameInputEl = document.getElementById("usernameInput");
     const userStatusEl = document.getElementById("userStatus");
@@ -265,51 +165,51 @@
       }
     });
 
+    // --- CEK USERNAME MENGGUNAKAN BACKEND SENDIRI (BEBAS CORS!) ---
     checkBtnEl.onclick = async () => {
-  const username = usernameInputEl.value.trim();
-  if (!username) {
-    alert("Masukkan username Roblox!");
-    return;
-  }
-  userStatusEl.textContent = "🔎 Memeriksa username...";
-  avatarSectionEl.classList.add("hidden");
-  validUser = false;
-
-  try {
-    // Step 1: Fetch user info by username
-    const resp = await fetch("https://users.roblox.com/v1/usernames/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ usernames: [username] })
-    });
-    const d = await resp.json();
-
-    if (d.data && d.data.length > 0 && d.data[0].id) {
-      validUser = true;
-      userId = d.data[0].id;
-      userName = d.data[0].name;
-      displayNameEl.textContent = userName;
-
-      // Step 2: Fetch avatar
-      const thumbResp = await fetch(
-        `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`
-      );
-      const thumbData = await thumbResp.json();
-      if (thumbData.data && thumbData.data.length > 0 && thumbData.data[0].imageUrl) {
-        avatarPreviewEl.src = thumbData.data[0].imageUrl;
-      } else {
-        avatarPreviewEl.src = "";
+      const username = usernameInputEl.value.trim();
+      if (!username) {
+        alert("Masukkan username Roblox!");
+        return;
       }
+      userStatusEl.textContent = "🔎 Memeriksa username...";
+      avatarSectionEl.classList.add("hidden");
+      validUser = false;
 
-      avatarSectionEl.classList.remove("hidden");
-      userStatusEl.textContent = `✅ Username valid: ${userName} (ID: ${userId})`;
-    } else {
-      userStatusEl.textContent = "❌ Username tidak ditemukan!";
-    }
-  } catch (err) {
-    userStatusEl.textContent = "⚠️ Terjadi kesalahan server Roblox. Silakan coba lagi nanti.";
-  }
-};
+      try {
+        // Panggil backend-proxy sendiri
+        const resp = await fetch("/api/check-roblox-username", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username })
+        });
+        const d = await resp.json();
+        if (resp.ok && d.exists && d.user && d.user.id) {
+          validUser = true;
+          userId = d.user.id;
+          userName = d.user.name;
+          displayNameEl.textContent = userName;
+
+          // Fetch avatar (endpoint thumbnail terbaru)
+          const thumbResp = await fetch(
+            `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`
+          );
+          const thumbData = await thumbResp.json();
+          if (thumbData.data && thumbData.data.length > 0 && thumbData.data[0].imageUrl) {
+            avatarPreviewEl.src = thumbData.data[0].imageUrl;
+          } else {
+            avatarPreviewEl.src = "";
+          }
+
+          avatarSectionEl.classList.remove("hidden");
+          userStatusEl.textContent = `✅ Username valid: ${userName} (ID: ${userId})`;
+        } else {
+          userStatusEl.textContent = "❌ Username tidak ditemukan!";
+        }
+      } catch (err) {
+        userStatusEl.textContent = "⚠️ Terjadi kesalahan server Roblox. Silakan coba lagi nanti.";
+      }
+    };
 
     generateBtnEl.onclick = () => {
       const username = usernameInputEl.value.trim();
