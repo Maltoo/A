@@ -6,7 +6,6 @@ export default async function handler(req, res) {
 
   let username = "";
   try {
-    // Vercel kadang mengirim req.body sebagai string
     if (typeof req.body === "string") {
       username = JSON.parse(req.body).username || "";
     } else {
@@ -27,7 +26,22 @@ export default async function handler(req, res) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ usernames: [username], excludeBannedUsers: false }),
     });
-    const data = await robloxRes.json();
+
+    const text = await robloxRes.text();
+    let data = {};
+    try {
+      data = JSON.parse(text);
+    } catch (jsonErr) {
+      // Kalau gagal parsing, log isi respons
+      console.error("Gagal parse JSON dari Roblox:", text);
+      res.status(500).json({ error: "Invalid response from Roblox", detail: text });
+      return;
+    }
+
+    if (robloxRes.status === 429) {
+      res.status(429).json({ error: "Rate limited by Roblox, try again later" });
+      return;
+    }
 
     if (data?.data?.length > 0 && data.data[0].id) {
       res.status(200).json({ exists: true, user: data.data[0] });
@@ -35,6 +49,6 @@ export default async function handler(req, res) {
       res.status(404).json({ exists: false });
     }
   } catch (error) {
-    res.status(500).json({ error: "Failed to check username" });
+    res.status(500).json({ error: "Failed to check username", detail: error.message });
   }
 }
