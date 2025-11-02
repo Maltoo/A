@@ -3,255 +3,131 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MaltoStore - Top Up Robux</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <title>GolRoblox - Cek Username Roblox</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+
+  <!-- Custom CSS -->
   <style>
-    :root {
-      --light-bg: #f4f7fb;
-      --light-card: #ffffff;
-      --light-text: #1f2937;
-      --light-border: #d1d5db;
-      --light-accent: #FFE900;
-      --header-bg: #F1C31C;
-      --dark-bg: #0a0f2b;
-      --dark-card: #11153b;
-      --dark-text: #d6d2ff;
-      --dark-border: #3b2d77;
-      --dark-accent: #8b5cf6;
-    }
     body {
-      background-color: var(--light-bg);
-      color: var(--light-text);
-      font-family: "Inter", sans-serif;
-      transition: background-color 0.5s, color 0.5s;
+      background: #f4f6fb;
+      font-family: 'Inter', sans-serif;
     }
-    body.dark { background-color: var(--dark-bg); color: var(--dark-text); }
-    .card {
-      background-color: var(--light-card);
-      border: 1px solid var(--light-border);
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
-      transition: background-color 0.5s, border-color 0.5s;
+    .hero {
+      background: linear-gradient(90deg, #fcd34d, #fbbf24);
+      padding: 60px 0;
+      text-align: center;
     }
-    body.dark .card { background-color: var(--dark-card); border-color: var(--dark-border); }
-    input {
-      background-color: var(--light-bg);
-      color: var(--light-text);
-      border: 1px solid var(--light-border);
-      transition: all 0.4s ease;
+    .hero h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #111;
     }
-    body.dark input { background-color: #1a1f45; color: var(--dark-text); border-color: var(--dark-border); }
-    .btn-primary { background-color: var(--light-accent); color: white; transition: 0.3s; }
-    .btn-primary:hover { background-color: #2563eb; }
-    body.dark .btn-primary { background-color: var(--dark-accent); color: white; }
-    #themeToggle {
-      position: fixed; top: 16px; right: 16px;
-      background-color: var(--light-card); border: 2px solid var(--light-accent);
-      border-radius: 9999px; width: 50px; height: 50px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 26px; transition: all 0.4s ease; z-index: 50;
+    .check-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+      padding: 20px;
+      max-width: 450px;
+      margin: 30px auto;
     }
-    body.dark #themeToggle { background-color: var(--dark-card); border-color: var(--dark-accent); color: var(--dark-accent); }
-    #themeToggle:hover { transform: rotate(15deg) scale(1.1); }
+    #avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid #facc15;
+      display: none;
+    }
   </style>
 </head>
 
 <body>
-  <button id="themeToggle">🌙</button>
 
-  <div id="formPage" class="flex flex-col items-center justify-center min-h-screen p-6">
-    <div class="card rounded-2xl p-6 w-full max-w-md">
-      <h1 class="text-3xl font-bold mb-4 text-center">🎮 MaltoStore Top Up Robux</h1>
-
-      <label class="block mb-2 font-medium">Masukkan Username Roblox</label>
-      <div class="flex mb-3">
-        <input id="usernameInput" type="text" class="flex-1 p-3 rounded-l-lg border border-gray-300"
-               placeholder="Contoh: PlayerRoblox123">
-        <button id="checkBtn" class="btn-primary px-4 rounded-r-lg">🔍 Cek</button>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-warning" href="#">GolRoblox</a>
+      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navMenu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div id="navMenu" class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Beli Robux</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Cek Pesanan</a></li>
+        </ul>
       </div>
-      <p id="userStatus" class="text-sm mb-4 text-gray-500 italic">Belum dicek</p>
+    </div>
+  </nav>
 
-      <div id="avatarSection" class="flex flex-col items-center mb-4 hidden">
-        <img id="avatarPreview" src="" alt="Avatar Roblox" class="rounded-full border-4 border-yellow-400 w-24 h-24">
-        <p id="displayName" class="mt-2 font-semibold"></p>
-      </div>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>🔍 Cek Username Roblox Kamu</h1>
+      <p>Masukkan username untuk melihat avatar Roblox secara instan</p>
+    </div>
+  </section>
 
-      <label class="block mb-2 font-medium">Jumlah Robux</label>
-      <input id="robuxInput" type="number" min="50" class="w-full p-3 rounded-lg mb-2" placeholder="Minimal 50 Robux">
-      <p id="robuxEstimate" class="text-sm mb-2 opacity-70">Estimasi: Rp0</p>
-      <p id="gamepassInfo" class="text-sm mb-4 text-blue-500 font-semibold hidden"></p>
+  <!-- Cek Username -->
+  <div class="check-card">
+    <label class="form-label fw-semibold">Masukkan Username Roblox:</label>
+    <div class="input-group mb-3">
+      <input id="username" type="text" class="form-control" placeholder="Contoh: Player123" />
+      <button id="checkBtn" class="btn btn-warning text-white">🔍 Cek</button>
+    </div>
 
-      <button id="generateBtn" class="btn-primary w-full py-3 rounded-lg font-semibold">⚡ Generate QRIS</button>
+    <div id="status" class="text-muted mb-3">Belum dicek</div>
+
+    <div class="text-center">
+      <img id="avatar" src="" alt="Avatar Roblox" class="mb-3" />
+      <h5 id="userDisplay" class="fw-bold"></h5>
     </div>
   </div>
 
-  <div id="resultPage" class="hidden min-h-screen flex flex-col">
-    <div class="flex items-center px-4 py-3 bg-yellow-400 text-slate-900 dark:bg-purple-700 dark:text-white">
-      <button id="backBtn" class="text-lg mr-2">←</button>
-      <h2 class="text-lg font-semibold">Kembali</h2>
-    </div>
-
-    <div class="flex-1 overflow-auto p-6">
-      <div class="max-w-md mx-auto">
-        <div class="card rounded-xl p-5 mb-4">
-          <p class="text-sm opacity-80">Total Bayar</p>
-          <h1 id="totalAmount" class="text-3xl font-bold">Rp0</h1>
-        </div>
-
-        <div class="card rounded-xl p-5 mb-6">
-          <h3 class="font-semibold mb-3">Detail Top Up</h3>
-          <p class="flex justify-between mb-1"><span>Username</span><span id="rUsername"></span></p>
-          <p class="flex justify-between mb-1"><span>User ID</span><span id="rUserId"></span></p>
-          <p class="flex justify-between mb-1"><span>Jumlah Robux</span><span id="rRobux"></span></p>
-          <p class="flex justify-between mb-1"><span>Gamepass Harga</span><span id="rGamepass"></span></p>
-          <p class="flex justify-between mb-1"><span>Biaya Admin</span><span id="rAdmin"></span></p>
-        </div>
-
-        <div class="flex flex-col items-center text-center">
-          <div id="qrcodeContainer" class="bg-white p-4 rounded-lg shadow-sm mb-3">
-            <div id="qrcode"></div>
-          </div>
-          <p id="amountQR" class="text-lg font-semibold mb-4"></p>
-
-          <button id="downloadQR" class="btn-primary w-full py-3 rounded-lg mb-2">💾 Download QRIS</button>
-          <button id="waBtn" class="w-full bg-green-600 hover:bg-green-500 text-white py-3 rounded-lg font-semibold">💬 Kirim Bukti via WhatsApp</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    // THEME TOGGLE
-    const bodyEl = document.body;
-    const themeToggle = document.getElementById("themeToggle");
-    const setTheme = (isDark) => {
-      bodyEl.classList.toggle("dark", isDark);
-      themeToggle.textContent = isDark ? "☀️" : "🌙";
-      localStorage.theme = isDark ? "dark" : "light";
-    };
-    setTheme(localStorage.theme === "dark");
-    themeToggle.onclick = () => setTheme(!bodyEl.classList.contains("dark"));
+    const checkBtn = document.getElementById("checkBtn");
+    const usernameInput = document.getElementById("username");
+    const statusEl = document.getElementById("status");
+    const avatarEl = document.getElementById("avatar");
+    const displayEl = document.getElementById("userDisplay");
 
-    // ELEMENTS
-    const usernameInputEl = document.getElementById("usernameInput");
-    const checkBtnEl = document.getElementById("checkBtn");
-    const userStatusEl = document.getElementById("userStatus");
-    const avatarPreviewEl = document.getElementById("avatarPreview");
-    const avatarSectionEl = document.getElementById("avatarSection");
-    const displayNameEl = document.getElementById("displayName");
-    const robuxInputEl = document.getElementById("robuxInput");
-    const robuxEstimateEl = document.getElementById("robuxEstimate");
-    const gamepassInfoEl = document.getElementById("gamepassInfo");
-    const generateBtnEl = document.getElementById("generateBtn");
-    const formPageEl = document.getElementById("formPage");
-    const resultPageEl = document.getElementById("resultPage");
-    const backBtnEl = document.getElementById("backBtn");
-    const totalAmountEl = document.getElementById("totalAmount");
-    const rUsernameEl = document.getElementById("rUsername");
-    const rUserIdEl = document.getElementById("rUserId");
-    const rRobuxEl = document.getElementById("rRobux");
-    const rGamepassEl = document.getElementById("rGamepass");
-    const rAdminEl = document.getElementById("rAdmin");
-    const qrcodeContainerEl = document.getElementById("qrcode");
-    const amountQREl = document.getElementById("amountQR");
-    const downloadQREl = document.getElementById("downloadQR");
-    const waBtnEl = document.getElementById("waBtn");
-
-    let validUser = false;
-    let userId = null;
-    let userName = null;
-    const PRICE_PER_ROBUX = 150;
-    const MIN_ROBUX = 50;
-
-    function estimateRobux(val) { return val * PRICE_PER_ROBUX; }
-    function calculateGamepass(val) { return Math.ceil(val / 0.7); }
-
-    robuxInputEl.addEventListener("input", () => {
-      const val = parseInt(robuxInputEl.value) || 0;
-      if (val >= MIN_ROBUX) {
-        robuxEstimateEl.textContent = `Estimasi: Rp${estimateRobux(val).toLocaleString()}`;
-        const gp = calculateGamepass(val);
-        gamepassInfoEl.textContent = `🎯 Buat Gamepass senilai ${gp} Robux agar ${val} Robux masuk penuh`;
-        gamepassInfoEl.classList.remove("hidden");
-      } else {
-        robuxEstimateEl.textContent = val > 0 ? `❌ Minimal ${MIN_ROBUX} Robux` : `Estimasi: Rp0`;
-        gamepassInfoEl.classList.add("hidden");
+    checkBtn.addEventListener("click", async () => {
+      const username = usernameInput.value.trim();
+      if (!username) {
+        statusEl.textContent = "⚠️ Masukkan username terlebih dahulu.";
+        return;
       }
-    });
 
-    // CEK USERNAME
-    checkBtnEl.onclick = async () => {
-      const username = usernameInputEl.value.trim();
-      if (!username) return alert("Masukkan username Roblox!");
-      userStatusEl.textContent = "🔎 Memeriksa username...";
-      avatarSectionEl.classList.add("hidden");
-      validUser = false;
+      statusEl.textContent = "🔎 Memeriksa username...";
+      avatarEl.style.display = "none";
+      displayEl.textContent = "";
 
       try {
-        const resp = await fetch("/api/check-roblox-username", {
+        const res = await fetch("/api/check-roblox-username", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username }),
         });
-        const data = await resp.json();
 
-        if (resp.ok && data.exists) {
-          validUser = true;
-          userId = data.user.id;
-          userName = data.user.username;
-          avatarPreviewEl.src = data.user.avatar || "";
-          displayNameEl.textContent = userName;
-          avatarSectionEl.classList.remove("hidden");
-          userStatusEl.textContent = `✅ Username valid: ${userName} (ID: ${userId})`;
-        } else userStatusEl.textContent = "❌ Username tidak ditemukan!";
-      } catch {
-        userStatusEl.textContent = "⚠️ Terjadi kesalahan server Roblox.";
+        const data = await res.json();
+
+        if (res.ok && data.exists) {
+          statusEl.textContent = `✅ Username ditemukan: ${data.user.username}`;
+          displayEl.textContent = data.user.username;
+          avatarEl.src = data.user.avatar || "";
+          avatarEl.style.display = "block";
+        } else {
+          statusEl.textContent = "❌ Username tidak ditemukan.";
+        }
+      } catch (err) {
+        statusEl.textContent = "⚠️ Gagal memeriksa. Coba lagi nanti.";
       }
-    };
-
-    // GENERATE QRIS
-    generateBtnEl.onclick = () => {
-      const username = usernameInputEl.value.trim();
-      const robuxVal = parseInt(robuxInputEl.value);
-      if (!validUser) return alert("Cek username dulu!");
-      if (isNaN(robuxVal) || robuxVal < MIN_ROBUX) return alert(`Minimal ${MIN_ROBUX} Robux!`);
-
-      const adminFee = Math.floor(Math.random() * 150) + 201;
-      const totalRp = estimateRobux(robuxVal) + adminFee;
-      const gamepassVal = calculateGamepass(robuxVal);
-
-      rUsernameEl.textContent = userName;
-      rUserIdEl.textContent = userId;
-      rRobuxEl.textContent = robuxVal + " Robux";
-      rGamepassEl.textContent = gamepassVal + " Robux";
-      rAdminEl.textContent = "Rp" + adminFee.toLocaleString();
-      totalAmountEl.textContent = "Rp" + totalRp.toLocaleString();
-      amountQREl.textContent = "Total: Rp" + totalRp.toLocaleString();
-
-      qrcodeContainerEl.innerHTML = "";
-      new QRCode(qrcodeContainerEl, { text: `TOPUP|${userName}|${robuxVal}|Rp${totalRp}`, width: 240, height: 240 });
-
-      formPageEl.classList.add("hidden");
-      resultPageEl.classList.remove("hidden");
-
-      downloadQREl.onclick = () => {
-        const canvas = qrcodeContainerEl.querySelector("canvas");
-        const link = document.createElement("a");
-        link.download = `QRIS_Roblox_${userName}_${robuxVal}Robux.png`;
-        link.href = canvas.toDataURL();
-        link.click();
-      };
-
-      waBtnEl.onclick = () => {
-        const msg = `Halo MaltoStore,%0A🎮 Roblox%0A🧍 Username: ${userName}%0A🆔 UserID: ${userId}%0A💎 Jumlah: ${robuxVal} Robux%0A🎯 Harga Gamepass: ${gamepassVal} Robux%0A💰 Total: Rp${totalRp.toLocaleString()}%0A📱 Pembayaran via QRIS`;
-        window.open(`https://wa.me/6287832947305?text=${msg}`, "_blank");
-      };
-    };
-
-    backBtnEl.onclick = () => {
-      resultPageEl.classList.add("hidden");
-      formPageEl.classList.remove("hidden");
-    };
+    });
   </script>
 </body>
 </html>
