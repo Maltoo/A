@@ -5,12 +5,70 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Roblox Username Checker</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 2em; background: #f5f5f5; }
-    h1 { margin-bottom: 1em; }
-    input, button { font-size: 1em; padding: .5em; margin-right: .5em; }
-    #result { margin-top: 1em; font-weight: bold; }
-    #avatarContainer { margin-top: 10px; }
-    img.avatar { border-radius: 50%; width: 150px; height: 150px; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2em;
+      background: #f5f5f5;
+    }
+
+    h1 {
+      margin-bottom: 1em;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5em;
+    }
+
+    input {
+      font-size: 1em;
+      padding: 0.5em 0.75em;
+      width: 250px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: #007bff;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5em 0.9em;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    #result {
+      margin-top: 1em;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    #avatarContainer {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    img.avatar {
+      border-radius: 50%;
+      width: 150px;
+      height: 150px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
@@ -18,7 +76,7 @@
 
   <form id="usernameForm">
     <input type="text" id="username" placeholder="Enter Roblox username" required />
-    <button type="submit">Check</button>
+    <button type="submit" title="Check Username">🔍</button>
   </form>
 
   <div id="result"></div>
