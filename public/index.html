@@ -266,37 +266,50 @@
     });
 
     checkBtnEl.onclick = async () => {
-      const username = usernameInputEl.value.trim();
-      if (!username) {
-        alert("Masukkan username Roblox!");
-        return;
-      }
-      userStatusEl.textContent = "🔎 Memeriksa username...";
-      avatarSectionEl.classList.add("hidden");
-      validUser = false;
+  const username = usernameInputEl.value.trim();
+  if (!username) {
+    alert("Masukkan username Roblox!");
+    return;
+  }
+  userStatusEl.textContent = "🔎 Memeriksa username...";
+  avatarSectionEl.classList.add("hidden");
+  validUser = false;
 
-      try {
-        const resp = await fetch("https://users.roblox.com/v1/usernames/users", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ usernames: [username] })
-        });
-        const d = await resp.json();
-        if (d.data && d.data.length > 0 && d.data[0].id) {
-          validUser = true;
-          userId = d.data[0].id;
-          userName = d.data[0].name;
-          displayNameEl.textContent = userName;
-          avatarPreviewEl.src = `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`;
-          avatarSectionEl.classList.remove("hidden");
-          userStatusEl.textContent = `✅ Username valid: ${userName} (ID: ${userId})`;
-        } else {
-          userStatusEl.textContent = "❌ Username tidak ditemukan!";
-        }
-      } catch (err) {
-        userStatusEl.textContent = "⚠️ Gagal memeriksa (cek koneksi internet).";
+  try {
+    // Step 1: Fetch user info by username
+    const resp = await fetch("https://users.roblox.com/v1/usernames/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ usernames: [username] })
+    });
+    const d = await resp.json();
+
+    if (d.data && d.data.length > 0 && d.data[0].id) {
+      validUser = true;
+      userId = d.data[0].id;
+      userName = d.data[0].name;
+      displayNameEl.textContent = userName;
+
+      // Step 2: Fetch avatar
+      const thumbResp = await fetch(
+        `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`
+      );
+      const thumbData = await thumbResp.json();
+      if (thumbData.data && thumbData.data.length > 0 && thumbData.data[0].imageUrl) {
+        avatarPreviewEl.src = thumbData.data[0].imageUrl;
+      } else {
+        avatarPreviewEl.src = "";
       }
-    };
+
+      avatarSectionEl.classList.remove("hidden");
+      userStatusEl.textContent = `✅ Username valid: ${userName} (ID: ${userId})`;
+    } else {
+      userStatusEl.textContent = "❌ Username tidak ditemukan!";
+    }
+  } catch (err) {
+    userStatusEl.textContent = "⚠️ Terjadi kesalahan server Roblox. Silakan coba lagi nanti.";
+  }
+};
 
     generateBtnEl.onclick = () => {
       const username = usernameInputEl.value.trim();
