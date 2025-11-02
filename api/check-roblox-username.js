@@ -1,34 +1,32 @@
-async function cekUsername() {
-  const username = document.getElementById('username').value.trim();
-  const hasil = document.getElementById('hasil');
-  const error = document.getElementById('error');
-  hasil.innerHTML = '';
-  error.textContent = '';
-
-  if (!username) {
-    error.textContent = '⚠️ Silakan masukkan username terlebih dahulu.';
-    return;
-  }
-
-  try {
-    const response = await fetch(`https://api.roblox.com/users/get-by-username?username=${username}`);
-    const data = await response.json();
-
-    if (data && data.Id) {
-      const userId = data.Id;
-      const avatarUrl = `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=420&height=420&format=png`;
-
-      hasil.innerHTML = `
-        <h3>${data.Username}</h3>
-        <img src="${avatarUrl}" alt="Avatar Roblox ${data.Username}">
-      `;
-    } else {
-      error.textContent = '❌ Username tidak ditemukan.';
-    }
-  } catch (err) {
-    error.textContent = '⚠️ Gagal memeriksa (cek koneksi internet).';
-  }
+export default async function handler(req, res) {
+if (req.method !== "POST") {
+res.status(405).json({ error: "Only POST allowed" });
+return;
 }
 
-// Hubungkan tombol ke fungsi
-document.getElementById('searchBtn').addEventListener('click', cekUsername);
+const { username } = req.body;
+
+if (!username) {
+res.status(400).json({ error: "Username is required" });
+return;
+}
+
+try {
+const robloxRes = await fetch("https://users.roblox.com/v1/usernames/users", {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({ usernames: [username], excludeBannedUsers: false }),
+});
+
+const data = await robloxRes.json();  
+
+if (data?.data?.length > 0 && data.data[0].requestedUsername) {  
+  res.status(200).json({ exists: true, user: data.data[0] });  
+} else {  
+  res.status(404).json({ exists: false });  
+}
+
+} catch (error) {
+res.status(500).json({ error: "Failed to check username" });
+}
+}
